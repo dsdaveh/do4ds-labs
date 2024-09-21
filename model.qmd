@@ -31,6 +31,21 @@ y = df['body_mass_g']
 model = LinearRegression().fit(X, y)
 ```
 
+## test response
+
+```{python}
+from pandas import DataFrame
+test_data = {
+    'bill_length_mm': [39.1],   
+    'species_Chinstrap': [True], 
+    'species_Gentoo': [False], 
+    'sex_male': [True]        
+}
+df_test = DataFrame(test_data)
+test_predict = model.predict(df_test)
+print(test_predict)
+```
+
 ## Get some information
 
 ```{python}
@@ -38,4 +53,26 @@ print(f"R^2 {model.score(X,y)}")
 print(f"Intercept {model.intercept_}")
 print(f"Columns {X.columns}")
 print(f"Coefficients {model.coef_}")
+```
+
+```{python}
+from vetiver import VetiverModel
+v = VetiverModel(model, model_name='penguin_model', prototype_data=X)
+```
+
+## Save to Board
+
+```{python}
+from pins import board_folder
+from vetiver import vetiver_pin_write
+
+model_board = board_folder("data/model", allow_pickle_read = True)
+vetiver_pin_write(model_board, v)
+```
+
+## Turn model into API
+
+```{python}
+from vetiver import VetiverAPI
+app = VetiverAPI(v, check_prototype = True)
 ```
