@@ -1,0 +1,76 @@
+---
+title: "Model"
+format:
+  html:
+    code-fold: true
+---
+
+```{r}
+library(palmerpenguins)
+library(vetiver)
+library(pins)
+library(tibble)
+```
+
+## Get Data
+
+```{r}
+df <- penguins |> na.omit()
+df |> head(3)
+```
+
+## Define Model and Fit
+
+```{r}
+# Fit a linear regression model
+model <- lm(body_mass_g ~ bill_length_mm + species + sex, data = penguins)
+```
+
+## test response
+
+```{r}
+test_data <- tibble(
+    bill_length_mm = 39.1,   
+    species = 'Chinstrap', 
+    sex = 'male'      
+)
+predict(model, newdata = test_data)
+```
+
+## Get some information
+
+```{r}
+model_summary <- summary(model)
+model_r2 <- model_summary$r.squared
+model_coef <- model[["coefficients"]]
+model_cols <- names(model$model)
+
+```
+
+R^2^ = `r model_r2`
+
+Coefficients = `r model_coef`
+
+Columns = `r model_cols`
+
+## Save to Board
+
+```{r}
+# Create a Vetiver model
+v <- vetiver_model(model, model_name = "penguin_model")
+
+# Create a local pins board and pin the model
+board <- board_folder("data")
+vetiver_pin_write(board, v)
+```
+
+To run:
+
+```
+library(plumber)
+pr() %>%
+  vetiver_api(v) %>%
+  pr_run(port = 8080)
+```
+
+
