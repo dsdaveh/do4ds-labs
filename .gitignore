@@ -8,3 +8,5 @@
 _site/*
 .venv/*
 renv/*
+data/model/penguin_model*
+data/penguin_model*
