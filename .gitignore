@@ -10,3 +10,7 @@ _site/*
 renv/*
 data/model/penguin_model*
 data/penguin_model*
+my-db.duckdb
+
+README.html
+README_files*
